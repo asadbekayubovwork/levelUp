@@ -1,0 +1,42 @@
+/* Collapse */
+.collapse-enter-active,
+.collapse-leave-active {
+  transition: all 0.3s ease-in-out;
+}
+
+.collapse-enter-from,
+.collapse-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+
+/* Fade */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Blur and Fade */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    filter 0.5s ease,
+    opacity 0.5s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  filter: blur(10px);
+  opacity: 0;
+}
+
+.page-enter-to,
+.page-leave-from {
+  filter: blur(0);
+  opacity: 1;
+}
