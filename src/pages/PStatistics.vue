@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, markRaw, onUnmounted } from 'vue'
 import Chart from 'chart.js/auto'
-import { productService } from '@/shared/api/productService'
+import { productService } from '@/entities/products/api/productService'
 import { useThrottle } from '@/shared/lib/composables/useThrottle'
 
 const canvasRef = ref(null)

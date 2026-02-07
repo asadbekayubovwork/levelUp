@@ -1,69 +1,38 @@
 <script setup lang="ts">
-import { ref, shallowRef, onMounted, watch, defineAsyncComponent } from 'vue';
+import { ref, onMounted, watch, defineAsyncComponent } from 'vue';
 import { NInput, NButton, NSpin } from 'naive-ui';
 import { Upload, Search } from 'lucide-vue-next';
-import { productService } from '@/entities/products/api/productService';
-import type { Product, CreateProductDto } from '@/entities/products/api/types';
+import { storeToRefs } from 'pinia';
+import { useProductStore } from '@/entities/products/model/products.store';
+import type { CreateProductDto } from '@/entities/products/api/types';
 import { useDebounce, useInfiniteScroll, useToast } from '@/shared/lib';
+
 const ProductCard = defineAsyncComponent(() => import('@/components/ProductCard.vue'));
 const AddProductModal = defineAsyncComponent(() => import('@/components/AddProductModal.vue'));
 
-const products = shallowRef<Product[]>([]);
-const loading = ref(false);
-const loadingMore = ref(false);
-const error = ref<string | null>(null);
-const searchQuery = ref('');
+const store = useProductStore();
+const { products, loading, loadingMore, searchQuery, limit, showModal, submitting } = storeToRefs(store);
+
 const targetRef = ref<HTMLElement | null>(null);
-const limit = ref(10);
-const showModal = ref(false);
-const submitting = ref(false);
 const toast = useToast();
 
-const fetchProducts = async (isLoadMore = false) => {
-  if (isLoadMore) {
-    loadingMore.value = true;
-  } else {
-    loading.value = true;
-  }
-  error.value = null;
-
-  try {
-    const query = searchQuery.value.trim();
-    const response = await productService.getProducts(limit.value, query);
-
-    products.value = response.products;
-  } catch (err) {
-    error.value = 'Mahsulotlarni yuklashda xatolik yuz berdi';
-    console.error('Error fetching products:', err);
-  } finally {
-    loading.value = false;
-    loadingMore.value = false;
-  }
-};
-
 const handleAddProduct = async (productData: CreateProductDto) => {
-  submitting.value = true;
-
   try {
-    await productService.addProduct(productData);
+    await store.addProduct(productData);
     toast.success('Muvaffaqiyatli!', 'Mahsulot qo\'shildi');
     showModal.value = false;
   } catch (err) {
     toast.error('Xatolik', 'Mahsulot qo\'shishda xatolik yuz berdi!');
-    console.error('Error adding product:', err);
-  } finally {
-    submitting.value = false;
+    // Error is logged in store
   }
 };
 
-const debouncedSearch = useDebounce(fetchProducts, 500);
+const debouncedSearch = useDebounce(() => {
+  store.fetchProducts();
+}, 500);
 
 const loadMore = useDebounce(() => {
-  if (products.value.length < limit.value) return;
-  if (!loading.value && !loadingMore.value) {
-    limit.value += 10;
-    fetchProducts(true);
-  }
+  store.loadMoreProducts();
 }, 300);
 
 useInfiniteScroll(targetRef, loadMore);
@@ -74,7 +43,7 @@ watch(searchQuery, () => {
 });
 
 onMounted(() => {
-  fetchProducts();
+  store.fetchProducts();
 });
 </script>
 
