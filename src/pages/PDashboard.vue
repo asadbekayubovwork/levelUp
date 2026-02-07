@@ -2,11 +2,9 @@
 import { ref, shallowRef, onMounted, watch, defineAsyncComponent } from 'vue';
 import { NInput, NButton, NSpin } from 'naive-ui';
 import { Upload, Search } from 'lucide-vue-next';
-import { productService } from '@/shared/api/productService';
-import type { Product, CreateProductDto } from '@/shared/types/product';
-import { useDebounce } from '@/shared/lib/composables/useDebounce';
-import { useInfiniteScroll } from '@/shared/lib/composables/useIntersectionObserver';
-import { useToast } from '@/shared/lib';
+import { productService } from '@/entities/products/api/productService';
+import type { Product, CreateProductDto } from '@/entities/products/api/types';
+import { useDebounce, useInfiniteScroll, useToast } from '@/shared/lib';
 const ProductCard = defineAsyncComponent(() => import('@/components/ProductCard.vue'));
 const AddProductModal = defineAsyncComponent(() => import('@/components/AddProductModal.vue'));
 
@@ -47,8 +45,7 @@ const handleAddProduct = async (productData: CreateProductDto) => {
   submitting.value = true;
 
   try {
-    const newProduct = await productService.addProduct(productData);
-    products.value.unshift(newProduct);
+    await productService.addProduct(productData);
     toast.success('Muvaffaqiyatli!', 'Mahsulot qo\'shildi');
     showModal.value = false;
   } catch (err) {

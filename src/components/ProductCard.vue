@@ -36,7 +36,7 @@ defineProps<Props>();
 
             <div class="flex items-center gap-2">
                 <NRate :value="product.rating" readonly size="small" />
-                <span class="text-sm text-gray-600">({{ product.rating.toFixed(1) }})</span>
+                <span class="text-sm text-gray-600">({{ product.rating?.toFixed(1) }})</span>
             </div>
 
             <div class="flex items-center justify-between pt-3 border-t">

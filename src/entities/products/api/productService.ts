@@ -1,6 +1,6 @@
-import type { ProductsResponse, Product, CreateProductDto } from '../types/product';
+import type { ProductsResponse, Product, CreateProductDto } from './types';
 
-const API_BASE_URL = 'https://dummyjson.com';
+const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
 
 export const productService = {
     /**
