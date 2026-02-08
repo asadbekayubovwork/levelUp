@@ -1,14 +1,20 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import { authService } from '../api/authService';
 import type { LoginCredentials, AuthResponse } from '../api/types';
 import Cookies from 'js-cookie';
+import { useRouter } from 'vue-router';
+
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref<AuthResponse['user'] | null>(null);
     const token = ref<string | null>(null);
     const loading = ref(false);
     const error = ref<string | null>(null);
+    const router = useRouter();
+
+
+    const isAuthenticated = computed(() => !!user.value && !!token.value)
 
     const login = async (credentials: LoginCredentials) => {
         loading.value = true;
@@ -31,6 +37,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null;
         token.value = null;
         Cookies.remove('access_token');
+        router.push('/login');
     };
 
     return {
@@ -38,6 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
         token,
         loading,
         error,
+        isAuthenticated,
         login,
         logout
     };

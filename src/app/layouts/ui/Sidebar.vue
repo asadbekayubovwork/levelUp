@@ -1,6 +1,23 @@
 <script setup lang="ts">
-import { Box, BarChart3 } from 'lucide-vue-next'
+import { Box, BarChart3, LogOut } from 'lucide-vue-next'
 import type { Component } from 'vue'
+import { useAuthStore } from '@/features/auth/model/auth.store'
+import { useDialog } from 'naive-ui'
+
+const authStore = useAuthStore()
+const dialog = useDialog()
+
+const logout = () => {
+    dialog.warning({
+        title: 'Chiqish',
+        content: 'Haqiqatdan ham tizimdan chiqmoqchimisiz?',
+        positiveText: 'Ha',
+        negativeText: "Yo'q",
+        onPositiveClick: () => {
+            authStore.logout()
+        }
+    })
+}
 
 interface NavItem {
     path: string
@@ -32,16 +49,23 @@ const navItems: NavItem[] = [
                 <img src="@/shared/assets/svg/logo.svg" alt="Logo" />
             </router-link>
         </div>
-        <nav class="flex-1 p-4 overflow-y-auto bg-white rounded-r-2xl  rounded-tl-2xl gap-1 flex flex-col">
-            <router-link v-for="item in navItems" :key="item.path" :to="item.path"
-                class=" flex items-center rounded-lg px-4 py-3 transition-colors duration-200" :class="[
-                    $route.path === item.path
-                        ? 'bg-[#EDEFF2] text-[#1F1F21]'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                ]">
-                <component :is="item.icon" :size="24" class="mr-3" />
-                {{ item.label }}
-            </router-link>
-        </nav>
+        <div class="flex flex-col flex-1 gap-1 overflow-y-auto bg-white rounded-r-2xl p-4 rounded-tl-2xl">
+            <nav class="flex-1  gap-1 flex flex-col">
+                <router-link v-for="item in navItems" :key="item.path" :to="item.path"
+                    class=" flex items-center rounded-lg px-4 py-3 transition-colors duration-200" :class="[
+                        $route.path === item.path
+                            ? 'bg-[#EDEFF2] text-[#1F1F21]'
+                            : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
+                    ]">
+                    <component :is="item.icon" :size="24" class="mr-3" />
+                    {{ item.label }}
+                </router-link>
+            </nav>
+            <button @click="logout"
+                class="flex items-center rounded-lg px-4 py-3 transition-colors duration-200 border hover:bg-gray-50">
+                <component :is="LogOut" :size="24" class="mr-3" />
+                Chiqish
+            </button>
+        </div>
     </aside>
 </template>

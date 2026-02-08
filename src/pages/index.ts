@@ -16,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Dashboard",
     meta: {
       layout: "DashboardLayout",
-      requiresAuth: false,
+      requiresAuth: true,
     },
     component: () => import("./PDashboard.vue"),
   },
@@ -25,7 +25,7 @@ const routes: Array<RouteRecordRaw> = [
     name: "Statistics",
     meta: {
       layout: "DashboardLayout",
-      requiresAuth: false,
+      requiresAuth: true,
     },
     component: () => import("./PStatistics.vue"),
   },
