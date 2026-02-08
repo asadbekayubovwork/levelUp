@@ -7,8 +7,8 @@ import { useProductStore } from '@/entities/products/model/products.store';
 import type { CreateProductDto } from '@/entities/products/api/types';
 import { useDebounce, useInfiniteScroll, useToast } from '@/shared/lib';
 
-const ProductCard = defineAsyncComponent(() => import('@/components/ProductCard.vue'));
-const AddProductModal = defineAsyncComponent(() => import('@/components/AddProductModal.vue'));
+const ProductCard = defineAsyncComponent(() => import('@/entities/products/ui/ProductCard.vue'));
+const AddProductModal = defineAsyncComponent(() => import('@/features/create-product/ui/AddProductModal.vue'));
 
 const store = useProductStore();
 const { products, loading, loadingMore, searchQuery, limit, showModal, submitting } = storeToRefs(store);
@@ -65,7 +65,6 @@ onMounted(() => {
           Mahsuloq qo'shish
         </NButton>
       </div>
-      <h2 class="text-2xl font-medium">Mahsulotlar <span>({{ products.length }})</span></h2>
     </div>
 
     <div v-if="loading" class="flex justify-center items-center py-20">

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NCard, NRate } from 'naive-ui';
-import type { Product } from '@/shared/types/product';
+import type { Product } from '@/entities/products/api/types';
 
 interface Props {
     product: Product;

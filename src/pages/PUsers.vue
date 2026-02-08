@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 import { useUserStore } from '@/entities/users';
 import { storeToRefs } from 'pinia';
 import { useDebounce, useToast } from '@/shared/lib';
 import type { User, CreateUserDto } from '@/entities/users/api/types';
-import UserHeader from '@/components/users/UserHeader.vue';
-import UserList from '@/components/users/UserList.vue';
-import UserFormModal from '@/components/users/UserFormModal.vue';
+
+const UserHeader = defineAsyncComponent(() => import('@/features/manage-users/ui/UserHeader.vue'));
+const UserList = defineAsyncComponent(() => import('@/entities/users/ui/UserList.vue'));
+const UserFormModal = defineAsyncComponent(() => import('@/features/manage-users/ui/UserFormModal.vue'));
 
 const store = useUserStore();
 const { users, loading, searchQuery, submitting } = storeToRefs(store);

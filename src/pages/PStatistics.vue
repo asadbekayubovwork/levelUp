@@ -56,7 +56,6 @@ onUnmounted(() => {
 
 <template>
     <div class="p-4 w-full h-[600px]">
-        <h2 class="text-2xl font-medium mb-10">Mahsulotlar narxlari statistikasi</h2>
         <div class="w-[70%] mx-auto relative h-full">
             <canvas ref="canvasRef"></canvas>
         </div>
