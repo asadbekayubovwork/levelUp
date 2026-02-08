@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { Box, BarChart3, LogOut, Users } from 'lucide-vue-next'
 import type { Component } from 'vue'
-import { useAuthStore } from '@/features/auth/model/auth.store'
+import { useRouter } from 'vue-router'
 import { useDialog } from 'naive-ui'
 
-const authStore = useAuthStore()
+import { useAuthStore } from '@/features/auth/model/auth.store'
+import { useProductStore } from '@/entities/products/model/products.store'
+import { useUserStore } from '@/entities/users'
+
+const router = useRouter()
 const dialog = useDialog()
+
+const authStore = useAuthStore()
+const productStore = useProductStore()
+const userStore = useUserStore()
 
 const logout = () => {
     dialog.warning({
@@ -15,6 +23,11 @@ const logout = () => {
         negativeText: "Yo'q",
         onPositiveClick: () => {
             authStore.logout()
+
+            productStore.$reset()
+            userStore.$reset()
+
+            router.push('/login')
         }
     })
 }
@@ -65,6 +78,7 @@ const navItems: NavItem[] = [
                     {{ item.label }}
                 </router-link>
             </nav>
+
             <button @click="logout"
                 class="flex items-center rounded-lg px-4 py-3 transition-colors duration-200 border hover:bg-gray-50">
                 <component :is="LogOut" :size="24" class="mr-3" />

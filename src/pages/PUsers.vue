@@ -13,10 +13,40 @@ const store = useUserStore();
 const { users, loading, searchQuery, submitting } = storeToRefs(store);
 
 const toast = useToast();
-
 const showModal = ref(false);
 const modalMode = ref<'add' | 'edit'>('add');
 const selectedUser = ref<User | null>(null);
+
+store.$onAction(({ name, after, onError }) => {
+    const successMessages: Record<string, string> = {
+        addUser: "Foydalanuvchi muvaffaqiyatli qo'shildi",
+        updateUser: "Foydalanuvchi muvaffaqiyatli yangilandi",
+        deleteUser: "Foydalanuvchi o'chirildi"
+    };
+
+    const errorMessages: Record<string, string> = {
+        addUser: "Qo'shishda xatolik yuz berdi",
+        updateUser: "Yangilashda xatolik yuz berdi",
+        deleteUser: "O'chirishda xatolik yuz berdi"
+    };
+
+    after(() => {
+        if (successMessages[name]) {
+            toast.success('Muvaffaqiyatli', successMessages[name]);
+        }
+
+        if (name === 'addUser' || name === 'updateUser') {
+            showModal.value = false;
+        }
+    });
+
+    onError((error) => {
+        if (errorMessages[name]) {
+            toast.error('Xatolik', errorMessages[name]);
+        }
+        console.error(error);
+    });
+});
 
 const handleEdit = (user: User) => {
     modalMode.value = 'edit';
@@ -30,31 +60,18 @@ const handleAdd = () => {
     showModal.value = true;
 };
 
-const handleDelete = async (id: number) => {
-    try {
-        await store.deleteUser(id);
-        toast.success('Muvaffaqiyatli', 'Foydalanuvchi o\'chirildi');
-    } catch (e) {
-        toast.error('Xatolik', 'O\'chirishda xatolik yuz berdi');
-    }
+
+const handleDelete = (id: number) => {
+    store.deleteUser(id);
 };
 
-const handleFormSubmit = async (data: CreateUserDto & { id?: number }) => {
-    try {
-        if (modalMode.value === 'add') {
-            await store.addUser(data);
-            toast.success('Muvaffaqiyatli', 'Foydalanuvchi qo\'shildi');
-        } else {
-            if (data.id) {
-                const { id, ...rest } = data;
-                await store.updateUser(id, rest);
-                toast.success('Muvaffaqiyatli', 'Foydalanuvchi yangilandi');
-            }
-        }
-        showModal.value = false;
-    } catch (e) {
-        if (e instanceof Error) {
-            toast.error('Xatolik', 'Saqlashda xatolik yuz berdi');
+const handleFormSubmit = (data: CreateUserDto & { id?: number }) => {
+    if (modalMode.value === 'add') {
+        store.addUser(data);
+    } else {
+        if (data.id) {
+            const { id, ...rest } = data;
+            store.updateUser(id, rest);
         }
     }
 };
@@ -70,7 +87,6 @@ const handleSearchInput = (val: string) => {
     onSearch(val);
 };
 
-
 onMounted(() => {
     store.fetchUsers();
 });
@@ -79,6 +95,7 @@ onMounted(() => {
 <template>
     <div class="px-4 pb-4">
         <UserHeader :searchQuery="searchQuery" @update:searchQuery="handleSearchInput" @add="handleAdd" />
+
         <UserList :users="users" :loading="loading" @edit="handleEdit" @delete="handleDelete" />
 
         <UserFormModal v-model:show="showModal" :mode="modalMode" :initialData="selectedUser" :loading="submitting"

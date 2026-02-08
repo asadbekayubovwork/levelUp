@@ -16,15 +16,21 @@ const { products, loading, loadingMore, searchQuery, limit, showModal, submittin
 const targetRef = ref<HTMLElement | null>(null);
 const toast = useToast();
 
-const handleAddProduct = async (productData: CreateProductDto) => {
-  try {
-    await store.addProduct(productData);
-    toast.success('Muvaffaqiyatli!', 'Mahsulot qo\'shildi');
-    showModal.value = false;
-  } catch (err) {
-    toast.error('Xatolik', 'Mahsulot qo\'shishda xatolik yuz berdi!');
-    // Error is logged in store
+
+store.$onAction(({ name, after, onError }) => {
+  if (name === 'addProduct') {
+    after(() => {
+      toast.success('Muvaffaqiyatli!', "Mahsulot muvaffaqiyatli qo'shildi");
+      showModal.value = false;
+    });
+    onError((_err) => {
+      toast.error('Xatolik', "Mahsulot qo'shishda muammo yuzaga keldi");
+    });
   }
+});
+
+const handleAddProduct = (productData: CreateProductDto) => {
+  store.addProduct(productData);
 };
 
 const debouncedSearch = useDebounce(() => {
