@@ -17,6 +17,10 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       layout: "DashboardLayout",
       requiresAuth: true,
+      title: {
+        name: "Mahsulotlar",
+        description: "Barcha mahsulotlarni ko'rish va boshqarish"
+      }
     },
     component: () => import("./PDashboard.vue"),
   },
@@ -26,8 +30,25 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       layout: "DashboardLayout",
       requiresAuth: true,
+      title: {
+        name: "Statistika",
+        description: "Mahsulotlar narxlari statistikani ko'rish"
+      }
     },
     component: () => import("./PStatistics.vue"),
+  },
+  {
+    path: "/users",
+    name: "Users",
+    meta: {
+      layout: "DashboardLayout",
+      requiresAuth: true,
+      title: {
+        name: "Foydalanuvchilar",
+        description: "Barcha foydalanuvchilarni ko'rish va boshqarish"
+      }
+    },
+    component: () => import("./PUsers.vue"),
   },
   {
     path: "/:pathMatch(.*)*",

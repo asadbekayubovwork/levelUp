@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Box, BarChart3, LogOut } from 'lucide-vue-next'
+import { Box, BarChart3, LogOut, Users } from 'lucide-vue-next'
 import type { Component } from 'vue'
 import { useAuthStore } from '@/features/auth/model/auth.store'
 import { useDialog } from 'naive-ui'
@@ -32,11 +32,15 @@ const navItems: NavItem[] = [
         icon: Box
     },
     {
+        path: '/users',
+        label: 'Foydalanuvchilar',
+        icon: Users
+    },
+    {
         path: '/statistics',
         label: 'Statistika',
         icon: BarChart3
     },
-
 ]
 </script>
 

@@ -7,8 +7,10 @@ import { useRouter } from 'vue-router';
 
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref<AuthResponse['user'] | null>(null);
-    const token = ref<string | null>(null);
+    const userCookie = Cookies.get('user');
+    const user = ref<AuthResponse['user'] | null>(userCookie ? JSON.parse(userCookie) : null);
+    const token = ref<string | null>(Cookies.get('access_token') || null);
+
     const loading = ref(false);
     const error = ref<string | null>(null);
     const router = useRouter();
@@ -23,7 +25,10 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await authService.login(credentials);
             user.value = response.user;
             token.value = response.token;
-            Cookies.set('access_token', response.token);
+
+            Cookies.set('access_token', response.token, { expires: 7 });
+            Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
+
             return response;
         } catch (err: any) {
             error.value = err.message;
@@ -37,6 +42,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null;
         token.value = null;
         Cookies.remove('access_token');
+        Cookies.remove('user');
         router.push('/login');
     };
 

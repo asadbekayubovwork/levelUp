@@ -5,7 +5,11 @@ declare module "vue-router" {
   interface RouteMeta {
     layout?: string
     requiresAuth?: boolean
-    allowedRoles?: string[] // Array of role shortNames that can access this route
+    allowedRoles?: string[]
+    title?: {
+      name: string
+      description: string
+    }
   }
 }
 
