@@ -12,7 +12,7 @@ defineProps<Props>();
 <template>
     <NCard class="product-card hover:shadow-xl transition-shadow duration-300 cursor-pointer" hoverable>
         <div class="aspect-square overflow-hidden rounded-lg mb-4 bg-gray-100">
-            <img :src="product.thumbnail" :alt="product.title"
+            <img :src="product.thumbnail" :alt="product.title" loading="lazy"
                 class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
         </div>
 

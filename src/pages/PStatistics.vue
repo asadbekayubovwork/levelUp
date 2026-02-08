@@ -1,8 +1,18 @@
 <script setup>
 import { ref, onMounted, markRaw, onUnmounted } from 'vue'
-import Chart from 'chart.js/auto'
+import {
+    Chart,
+    BarController,
+    BarElement,
+    CategoryScale,
+    LinearScale,
+    Tooltip,
+    Legend
+} from 'chart.js'
 import { productService } from '@/entities/products/api/productService'
 import { useThrottle } from '@/shared/lib/composables/useThrottle'
+
+Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
 
 const canvasRef = ref(null)
 const chartInstance = ref(null)
