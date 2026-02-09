@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
-import { authService } from '../api/authService';
+import AuthService from '../api/authService';
 import type { LoginCredentials, AuthResponse } from '../api/types';
 import Cookies from 'js-cookie';
 import { useRouter } from 'vue-router';
@@ -22,11 +22,12 @@ export const useAuthStore = defineStore('auth', () => {
         loading.value = true;
         error.value = null;
         try {
-            const response = await authService.login(credentials);
+            const response = await AuthService.login(credentials);
             user.value = response.user;
             token.value = response.token;
 
             Cookies.set('access_token', response.token, { expires: 7 });
+            Cookies.set('refresh_token', response.refreshToken, { expires: 7 });
             Cookies.set('user', JSON.stringify(response.user), { expires: 7 });
 
             return response;
@@ -42,6 +43,7 @@ export const useAuthStore = defineStore('auth', () => {
         user.value = null;
         token.value = null;
         Cookies.remove('access_token');
+        Cookies.remove('refresh_token');
         Cookies.remove('user');
         router.push('/login');
     };

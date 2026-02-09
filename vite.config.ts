@@ -45,18 +45,40 @@ export default defineConfig({
     },
   },
   build: {
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+        pure_funcs: ['console.log', 'console.info', 'console.debug'],
+      },
+      format: {
+        comments: false,
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+    sourcemap: false,
+    cssCodeSplit: true,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
+            if (id.includes('vue-router')) return 'vendor-vue-router';
+            if (id.includes('pinia')) return 'vendor-pinia';
+            if (id.includes('vue-i18n')) return 'vendor-i18n';
             if (id.includes('vue')) return 'vendor-vue';
-            if (id.includes('axios')) return 'vendor-axios';
-            if (id.includes('node_modules/chart.js')) {
+
+            if (id.includes('chart.js') || id.includes('vue-chartjs')) {
               return 'chartjs-bundle';
             }
+
+            if (id.includes('naive-ui')) return 'vendor-naive-ui';
+
+            if (id.includes('axios')) return 'vendor-axios';
+
             return 'vendor';
           }
-        }
+        },
       }
     }
   },

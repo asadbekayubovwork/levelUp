@@ -1,57 +1,52 @@
+import ApiService from '@/shared/api/service';
 import type { ProductsResponse, Product, CreateProductDto } from './types';
 
-const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
-
-export const productService = {
+const ProductService = {
     /**
-     * Get products with optional search
-     * @param limit - Number of products to fetch (default: 30)
-     * @param search - Optional search query string
-     * @returns Promise with products response
+     * Get all products with optional search
+     * @param limit - Number of products to fetch
+     * @param search - Optional search query
      */
-    async getProducts(limit: number = 30, search?: string): Promise<ProductsResponse> {
-        try {
-            const url = search
-                ? `${API_BASE_URL}/products/search?q=${encodeURIComponent(search)}&limit=${limit}`
-                : `${API_BASE_URL}/products?limit=${limit}`;
+    async getAll(limit: number = 30, search?: string): Promise<ProductsResponse> {
+        const endpoint = search
+            ? `/products/search?q=${encodeURIComponent(search)}&limit=${limit}`
+            : `/products?limit=${limit}`;
 
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: ProductsResponse = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching products:', error);
-            throw error;
-        }
+        return ApiService.get<ProductsResponse>(endpoint);
     },
 
     /**
-     * Add a new product
-     * @param productData - Product data to create
-     * @returns Promise with created product
+     * Get product by ID
+     * @param id - Product ID
      */
-    async addProduct(productData: CreateProductDto): Promise<Product> {
-        try {
-            const response = await fetch(`${API_BASE_URL}/products/add`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(productData),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: Product = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error adding product:', error);
-            throw error;
-        }
+    async getById(id: string | number): Promise<Product> {
+        return ApiService.get<Product>(`/products/${id}`);
     },
 
+    /**
+     * Create a new product
+     * @param data - Product data
+     */
+    async create(data: CreateProductDto): Promise<Product> {
+        return ApiService.post<Product>('/products/add', data);
+    },
+
+    /**
+     * Update an existing product
+     * @param id - Product ID
+     * @param data - Updated product data
+     */
+    async update(id: string | number, data: Partial<CreateProductDto>): Promise<Product> {
+        return ApiService.put<Product>(`/products/${id}`, data);
+    },
+
+    /**
+     * Delete a product
+     * @param id - Product ID
+     */
+    async delete(id: string | number): Promise<Product> {
+        return ApiService.delete<Product>(`/products/${id}`);
+    },
 };
+
+export default ProductService;

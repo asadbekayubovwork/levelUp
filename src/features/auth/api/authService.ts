@@ -1,21 +1,37 @@
-import type { LoginCredentials, AuthResponse } from './types.ts';
+import ApiService from '@/shared/api/service';
+import type { LoginCredentials, AuthResponse, DummyJsonAuthResponse } from './types';
 
-export const authService = {
+const AuthService = {
     async login(credentials: LoginCredentials): Promise<AuthResponse> {
-        return new Promise((resolve, reject) => {
-            setTimeout(() => {
-                if (credentials.username === 'admin' && credentials.password === 'admin') {
-                    resolve({
-                        user: {
-                            name: 'Admin User',
-                            role: 'admin',
-                        },
-                        token: 'mock-jwt-token',
-                    });
-                } else {
-                    reject(new Error("Login yoki parol noto'g'ri"));
+        try {
+            const response = await ApiService.post<DummyJsonAuthResponse>(
+                '/auth/login',
+                {
+                    username: credentials.username,
+                    password: credentials.password,
+                    expiresInMins: credentials.expiresInMins || 30,
                 }
-            }, 1000);
-        });
+            );
+
+            const authResponse: AuthResponse = {
+                user: {
+                    id: response.id,
+                    name: `${response.firstName} ${response.lastName}`,
+                    username: response.username,
+                    email: response.email,
+                    role: 'user',
+                    image: response.image,
+                },
+                token: response.accessToken,
+                refreshToken: response.refreshToken,
+            };
+
+            return authResponse;
+        } catch (error) {
+            console.error('Login error:', error);
+            throw new Error("Login yoki parol noto'g'ri");
+        }
     },
 };
+
+export default AuthService;

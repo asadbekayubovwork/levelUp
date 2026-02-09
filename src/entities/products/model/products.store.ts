@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, shallowRef } from 'vue';
-import { productService } from '@/entities/products/api/productService';
+import ProductService from '@/entities/products/api/productService';
 import type { Product, CreateProductDto } from '@/entities/products/api/types';
 
 export const useProductStore = defineStore('product', () => {
@@ -25,7 +25,7 @@ export const useProductStore = defineStore('product', () => {
 
         try {
             const query = searchQuery.value.trim();
-            const response = await productService.getProducts(limit.value, query);
+            const response = await ProductService.getAll(limit.value, query);
 
             products.value = response.products;
         } catch (err) {
@@ -48,7 +48,7 @@ export const useProductStore = defineStore('product', () => {
     const addProduct = async (productData: CreateProductDto) => {
         submitting.value = true;
         try {
-            await productService.addProduct(productData);
+            await ProductService.create(productData);
             return true;
         } catch (err) {
             console.error('Error adding product:', err);

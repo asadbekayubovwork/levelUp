@@ -9,7 +9,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js'
-import { productService } from '@/entities/products/api/productService'
+import ProductService from '@/entities/products/api/productService'
 import { useThrottle } from '@/shared/lib/composables/useThrottle'
 
 Chart.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip, Legend)
@@ -20,7 +20,7 @@ const chartData = ref(null)
 
 const fetchData = async () => {
     try {
-        const data = await productService.getProducts(10)
+        const data = await ProductService.getAll(10)
         chartData.value = data
         drawChart()
     } catch (error) {

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, shallowRef, computed } from 'vue';
-import { userService } from '@/entities/users/api/userService';
+import UserService from '@/entities/users/api/userService';
 import type { User, CreateUserDto, UpdateUserDto, UserSummary } from '@/entities/users/api/types';
 
 export const useUserStore = defineStore('user', () => {
@@ -29,7 +29,7 @@ export const useUserStore = defineStore('user', () => {
             const limit = pagination.value.pageSize;
             const query = searchQuery.value.trim();
 
-            const response = await userService.getUsers(limit, query);
+            const response = await UserService.getAll(limit, query);
 
             users.value = response.users;
             pagination.value.total = response.total;
@@ -44,7 +44,7 @@ export const useUserStore = defineStore('user', () => {
     const addUser = async (userData: CreateUserDto) => {
         submitting.value = true;
         try {
-            const newUser = await userService.addUser(userData);
+            const newUser = await UserService.create(userData);
             users.value = [newUser, ...users.value];
             pagination.value.total += 1;
             return newUser;
@@ -59,7 +59,7 @@ export const useUserStore = defineStore('user', () => {
     const updateUser = async (id: number, userData: UpdateUserDto) => {
         submitting.value = true;
         try {
-            await userService.updateUser(id, userData);
+            await UserService.update(id, userData);
         } catch (err) {
             console.error('Error updating user:', err);
             throw err;
@@ -70,7 +70,7 @@ export const useUserStore = defineStore('user', () => {
 
     const deleteUser = async (id: number) => {
         try {
-            await userService.deleteUser(id);
+            await UserService.delete(id);
             users.value = users.value.filter(u => u.id !== id);
             pagination.value.total -= 1;
             return true;

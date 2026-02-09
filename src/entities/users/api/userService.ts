@@ -1,105 +1,52 @@
+import ApiService from '@/shared/api/service';
 import type { UsersResponse, User, CreateUserDto, UpdateUserDto } from './types';
 
-const API_BASE_URL = import.meta.env.VITE_BASE_API_URL;
-
-export const userService = {
+const UserService = {
     /**
-     * Get users with optional search
-     * @param limit - Number of users to fetch (default: 30)
-     * @param search - Optional search query string
-     * @returns Promise with users response
+     * Get all users with optional search
+     * @param limit - Number of users to fetch
+     * @param search - Optional search query
      */
-    async getUsers(limit: number = 30, search: string = ''): Promise<UsersResponse> {
-        try {
-            const url = search
-                ? `${API_BASE_URL}/users/search?q=${encodeURIComponent(search)}&limit=${limit}`
-                : `${API_BASE_URL}/users?limit=${limit}`;
+    async getAll(limit: number = 30, search: string = ''): Promise<UsersResponse> {
+        const endpoint = search
+            ? `/users/search?q=${encodeURIComponent(search)}&limit=${limit}`
+            : `/users?limit=${limit}`;
 
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: UsersResponse = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            throw error;
-        }
+        return ApiService.get<UsersResponse>(endpoint);
     },
 
     /**
-     * Add a new user
-     * @param userData - User data to create
-     * @returns Promise with created user
+     * Get user by ID
+     * @param id - User ID
      */
-    async addUser(userData: CreateUserDto): Promise<User> {
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/add`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-            });
+    async getById(id: string | number): Promise<User> {
+        return ApiService.get<User>(`/users/${id}`);
+    },
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: User = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error adding user:', error);
-            throw error;
-        }
+    /**
+     * Create a new user
+     * @param data - User data
+     */
+    async create(data: CreateUserDto): Promise<User> {
+        return ApiService.post<User>('/users/add', data);
     },
 
     /**
      * Update an existing user
      * @param id - User ID
-     * @param userData - Partial user data to update
-     * @returns Promise with updated user
+     * @param data - Updated user data
      */
-    async updateUser(id: number, userData: UpdateUserDto): Promise<User> {
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/${id}`, {
-                method: 'PUT', // Or PATCH, dummyjson supports both usually, request example says PUT/PATCH
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(userData),
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: User = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error updating user:', error);
-            throw error;
-        }
+    async update(id: string | number, data: UpdateUserDto): Promise<User> {
+        return ApiService.put<User>(`/users/${id}`, data);
     },
 
     /**
      * Delete a user
      * @param id - User ID
-     * @returns Promise with deleted user response
      */
-    async deleteUser(id: number): Promise<User> {
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/${id}`, {
-                method: 'DELETE',
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data: User = await response.json();
-            return data;
-        } catch (error) {
-            console.error('Error deleting user:', error);
-            throw error;
-        }
-    }
+    async delete(id: string | number): Promise<User> {
+        return ApiService.delete<User>(`/users/${id}`);
+    },
 };
+
+export default UserService;

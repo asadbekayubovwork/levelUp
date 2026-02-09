@@ -1,3 +1,4 @@
+import Cookies from "js-cookie"
 import { HttpError, type ApiClientConfig } from "./types"
 
 const API_BASE_URL =
@@ -25,7 +26,7 @@ const processQueue = (error: any = null) => {
  * Refresh the access token using the refresh token
  */
 async function refreshAccessToken(): Promise<string | null> {
-  const refreshToken = localStorage.getItem("refreshToken")
+  const refreshToken = Cookies.get("refresh_token")
 
   if (!refreshToken) {
     return null
@@ -48,10 +49,10 @@ async function refreshAccessToken(): Promise<string | null> {
     const data = await response.json()
 
     if (data.success && data.data.accessToken) {
-      // Store new tokens
-      localStorage.setItem("authToken", data.data.accessToken)
+      // Store new tokens in cookies
+      Cookies.set("access_token", data.data.accessToken, { expires: 7 })
       if (data.data.refreshToken) {
-        localStorage.setItem("refreshToken", data.data.refreshToken)
+        Cookies.set("refresh_token", data.data.refreshToken, { expires: 7 })
       }
       return data.data.accessToken
     }
@@ -59,8 +60,9 @@ async function refreshAccessToken(): Promise<string | null> {
     return null
   } catch (error) {
     // Clear tokens and redirect to login
-    localStorage.removeItem("authToken")
-    localStorage.removeItem("refreshToken")
+    Cookies.remove("access_token")
+    Cookies.remove("refresh_token")
+    Cookies.remove("user")
     window.location.href = "/login"
     return null
   }
@@ -74,8 +76,8 @@ export async function http<T>(
   url: string,
   config: ApiClientConfig = {}
 ): Promise<T> {
-  // 1. Get base URL and auth token
-  const token = localStorage.getItem("authToken")
+  // 1. Get base URL and auth token from cookies
+  const token = Cookies.get("access_token")
 
   // 2. Create headers
   const headers = new Headers({
@@ -151,7 +153,7 @@ export async function http<T>(
         failedQueue.push({ resolve, reject })
       }).then(() => {
         // Retry with new token
-        const newToken = localStorage.getItem("authToken")
+        const newToken = Cookies.get("access_token")
         if (newToken) {
           headers.set("Authorization", `Bearer ${newToken}`)
         }

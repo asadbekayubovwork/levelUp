@@ -1,3 +1,3 @@
 export * from './api/types';
-export * from './api/productService';
+export { default as ProductService } from './api/productService';
 
