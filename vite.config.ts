@@ -6,7 +6,6 @@ import { visualizer } from "rollup-plugin-visualizer"
 import viteImagemin from 'vite-plugin-imagemin'
 import importToCDN from 'vite-plugin-cdn-import'
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue(), visualizer({
     filename: './dist/stats.html',

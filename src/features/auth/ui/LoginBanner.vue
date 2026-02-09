@@ -1,7 +1,7 @@
 <template>
     <div class="hidden w-[60%] flex-col justify-center left-side px-16 text-white lg:flex relative overflow-hidden">
         <div class="relative z-10 max-w-xl">
-            <h1 class="mb-4 text-5xl font-bold">GoFinance</h1>
+            <h1 class="mb-4 text-5xl font-bold">Logoipsum</h1>
             <p class="mb-8 text-xl font-light">
                 Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo temporibus ipsum quisquam similique ipsa
                 in
@@ -18,6 +18,5 @@
         linear-gradient(#0575e6 0%, #02298a 85%, #021b79 100%);
     background-position: left bottom;
     background-repeat: no-repeat;
-    /* Added cover although original didn't have it, but usually good practice. Actually sticking to original */
 }
 </style>

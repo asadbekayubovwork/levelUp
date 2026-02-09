@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { LoginBanner, LoginForm } from '@/features/auth';
-import { useHead } from '@vueuse/head';
 
-
-useHead({
-  title: 'GoFinance',
-})
 
 </script>
 
