@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { NInput, NButton } from 'naive-ui';
+import { NInput } from 'naive-ui';
+import PageActionButton from '@/shared/ui/PageActionButton.vue';
 import { Search, Plus } from 'lucide-vue-next';
 
 defineProps<{
@@ -25,12 +26,7 @@ const handleUpdateValue = (value: string) => {
                     <Search :size="20" color="#A8AEB5" />
                 </template>
             </NInput>
-            <NButton type="success" class="h-11 rounded-xl w-[200px] !border-none" @click="emit('add')">
-                <template #icon>
-                    <Plus :size="20" color="#fff" />
-                </template>
-                Foydalanuvchi qo'shish
-            </NButton>
+            <PageActionButton :icon="Plus" label="Foydalanuvchi qo'shish" @click="emit('add')" />
         </div>
     </div>
 </template>

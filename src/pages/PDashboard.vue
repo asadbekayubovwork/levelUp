@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, defineAsyncComponent } from 'vue';
-import { NInput, NButton, NSpin } from 'naive-ui';
+import { NInput, NSpin } from 'naive-ui';
+import { PageActionButton } from '@/shared/ui';
 import { Upload, Search } from 'lucide-vue-next';
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '@/entities/products/model/products.store';
@@ -63,13 +64,8 @@ onMounted(() => {
             <Search :size="20" color="#A8AEB5" />
           </template>
         </NInput>
-        <NButton v-custom-tooltip="'Mahsulot qoshish tugmasi'" type="success"
-          class="h-11 rounded-xl w-[200px] !border-none" @click="showModal = true">
-          <template #icon>
-            <Upload :size="20" color="#fff" />
-          </template>
-          Mahsuloq qo'shish
-        </NButton>
+        <PageActionButton :icon="Upload" label="Mahsuloq qo'shish" v-custom-tooltip="'Mahsulot qoshish tugmasi'"
+          @click="showModal = true" />
       </div>
     </div>
 

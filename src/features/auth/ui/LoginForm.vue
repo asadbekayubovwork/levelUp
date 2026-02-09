@@ -41,7 +41,7 @@ const handleLogin = async () => {
 
         <form @submit.prevent="handleLogin" class="space-y-6">
             <div class="relative">
-                <input v-model="login" type="text" placeholder="Foydalanuvchi nomi" required
+                <input v-model="login" id="login-email" type="text" placeholder="Foydalanuvchi nomi" required
                     class="w-full rounded-full border border-gray-200 py-3 pl-12 pr-4 text-gray-700 placeholder-gray-400 transition-colors duration-300 focus:border-blue-500 focus:outline-none" />
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -53,7 +53,8 @@ const handleLogin = async () => {
             </div>
 
             <div class="relative">
-                <input v-model="password" :type="showPassword ? 'text' : 'password'" placeholder="Parol"
+                <input v-model="password" id="login-password" :type="showPassword ? 'text' : 'password'"
+                    placeholder="Parol"
                     class="w-full rounded-full border border-gray-200 py-3 pl-12 pr-12 text-gray-700 placeholder-gray-400 transition-colors duration-300 focus:border-blue-500 focus:outline-none" />
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
